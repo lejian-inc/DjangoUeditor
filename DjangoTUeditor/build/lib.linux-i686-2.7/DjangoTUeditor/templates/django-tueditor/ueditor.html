@@ -1,0 +1,34 @@
+<!-- 加载编辑器的容器 -->
+<script id="ueditor" name="{{ widget.name }}" style="display: inline-block; width:{{ settings.general.html_width }}; height:{{ settings.general.html_height }};" type="text/plain">
+{% if widget.value %}{{ widget.value|safe }}{% endif %}
+</script>
+<script type="text/javascript">
+    var ue = UE.getEditor('ueditor', {
+        toolbars: {{ settings.toolbars | safe }},
+        {% if settings.general.html_height %}
+        autoHeightEnabled: false,
+        {% endif %}
+        serverUrl: '/ueditor/controller/',
+        /*
+        onready: function(){
+            var img_host = ""
+            var img_collection = this.document.getElementsByTagName("img");
+            console.log(img_collection.length);
+            for (var i=0; i < img_collection.length; i++){
+                if(img_collection[i].relative_src!=undefined){
+                    img_collection[i].src = img_host + img_collection[i].relative_src;
+                }
+            }
+        }
+        */
+
+    });
+</script>
+
+
+{% comment %}
+TODO：
+1、这里的id需要动态生成
+2、width、height能够动态配置
+3、ueditor的所有配置均能够通过setting文件得到
+{% endcomment %}
