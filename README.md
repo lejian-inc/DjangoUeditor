@@ -70,8 +70,14 @@ class BookSerializer(serializers.Serializer):
 DjangoTUeditor的存储方式依赖于django项目所使用的storage，当你需要使用其他存储方式对文件进行存储时（如ftp），仅需要在django项目的
 settings文件中指定相应的storage，DjangoTUeditor会默认使用该storage对文件进行存储操作。
 
-django的storage相关信息：https://docs.djangoproject.com/en/2.0/ref/files/storage/
+django的storage相关信息：https://docs.djangoproject.com/en/2.0/ref/files/storage/  
 
+# 存储文件重命名
+在settings文件中可以指定对文件进行重命名的函数，默认使用原有文件名
+```python
+TUEDITOR_FILE_NAME_FUN=rename_fun
+```
+该函数接收一个原文件名参数
 
 # 域名设置及域名替换
 DjangoTUeditor存储时服务器返回的路径为相对路径，如果需要设置存储路径的域名信息，可以在后台进行配置，前端获得配置后将会将域名和服务器返回的相对地址进行拼接
@@ -114,6 +120,18 @@ class BookSerializer(serializers.Serializer):
 
 # 详细设置 
 以下内容均在django settings文件中设置
+
+文件存储路径设置  
+该路径是将storage的根目录作为存储根目录，默认存储在ueditor目录下
+```python
+TUEDITOR_UPLOAD_PATH = 'richtext/'
+```
+
+文件访问路径设置  
+服务器后端存储文件时返回的是相对路径，但是这个相对路径会加上一个路径访问前缀，如果没有设置的话，将会使用settings.MEDIA_URL
+```python
+TUEDITOR_MEDIA_URL = '/media/'
+```
 
 常规设置
 ```python
