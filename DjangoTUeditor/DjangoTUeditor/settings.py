@@ -136,6 +136,10 @@ if hasattr(gSettings, "TUEDITOR_UPLOAD_SETTINGS"):
 if hasattr(gSettings, "TUEDITOR_TOOLBARS_SETTINGS"):
     UEditorToolbarsSettings = gSettings.TUEDITOR_TOOLBARS_SETTINGS
 
+# 更新常规设置
+if hasattr(gSettings, "TUEDITOR_GENERAL_SETTINGS"):
+    UEditorGeneralSettings.update(gSettings.TUEDITOR_GENERAL_SETTINGS)
+
 
 # 获取存储使用的storage，依赖于Django的storage设置
 from django.core.files.storage import default_storage # 获取默认存储方式 
