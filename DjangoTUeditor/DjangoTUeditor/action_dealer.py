@@ -10,7 +10,8 @@ import time
 
 from django.http import JsonResponse
 from django.core.files.base import ContentFile
-
+from django.db import connection
+from tenant_mixin import TenantSchemaMixin
 import settings
 
 
@@ -33,7 +34,7 @@ class ActionDealerAbstract(object):
             self.settings = settings
 
 
-class DefaultActionDealer(ActionDealerAbstract):
+class DefaultActionDealer(TenantSchemaMixin, ActionDealerAbstract):
     """
     默认的ActionDealerAbastract实现类
     """
@@ -54,7 +55,11 @@ class DefaultActionDealer(ActionDealerAbstract):
             store_file_name = file_name_generator(filename)
         else:
             store_file_name = filename 
-        upload_path = self.settings.TUEDITOR_UPLOAD_PATH 
+        upload_path = self.settings.TUEDITOR_UPLOAD_PATH
+        # 此处校验是否使用了tenant_schema,如果使用了schema，则以它为传递前缀 TODO 这里的判断方法有问题
+        # if hasattr(connection, "tenant"):
+        #     save_prefix = "schema_{}".format(connection.tenant.schema_name)
+        #     upload_path = os.path.join(save_prefix, upload_path) 
         return os.path.join(upload_path, store_file_name)
 
     def _get_storage_files(self, path, url=None): 
@@ -131,9 +136,11 @@ class DefaultActionDealer(ActionDealerAbstract):
             upload_file.name = _file_name
 
             self.storage.save(store_path, upload_file)
+            show_path = self._append_tenant_schema(store_path) # 此处考虑带有tenant机制的情况
+            show_url = urllib.basejoin(self.settings.TUEDITOR_MEDIA_URL, show_path)
             rst = {
                 'state': 'SUCCESS',
-                'url': urllib.basejoin(self.settings.TUEDITOR_MEDIA_URL, store_path),
+                'url': show_url,
                 'original': upload_file.name,
                 'type': upload_file_suffix.replace(".", ""),
                 'size': upload_file.size,
@@ -160,10 +167,11 @@ class DefaultActionDealer(ActionDealerAbstract):
 
         store_path = self._get_upload_path(upload_file.name, action)
         self.storage.save(store_path, upload_file)
-
+        show_path = self._append_tenant_schema(store_path) # 此处考虑带有tenant机制的情况
+        show_url = urllib.basejoin(self.settings.TUEDITOR_MEDIA_URL, show_path)
         rst = {
             'state': 'SUCCESS',
-            'url': urllib.basejoin(self.settings.TUEDITOR_MEDIA_URL, store_path),
+            'url': show_url,
             'original': upload_file.name,
             'type': upload_file_suffix.replace(".", ""),
             'size': upload_file.size,
