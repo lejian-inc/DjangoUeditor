@@ -148,7 +148,7 @@ class DefaultActionDealer(TenantSchemaMixin, ActionDealerAbstract):
             _file_name, upload_file_suffix = os.path.splitext(store_path)
             upload_file.name = _file_name
 
-            self.storage.save(self._check_encode(store_path), upload_file)
+            self.storage.save(store_path, upload_file)
             show_path = self._append_tenant_schema(store_path) # 此处考虑带有tenant机制的情况
             show_url = urllib.basejoin(self.settings.TUEDITOR_MEDIA_URL, show_path)
             rst = {
@@ -179,7 +179,7 @@ class DefaultActionDealer(TenantSchemaMixin, ActionDealerAbstract):
             return JsonResponse({"state":"文件格式不符合要求"})
 
         store_path = self._get_upload_path(upload_file.name, action)
-        self.storage.save(self._check_encode(store_path), upload_file)
+        self.storage.save(store_path, upload_file)
         show_path = self._append_tenant_schema(store_path) # 此处考虑带有tenant机制的情况
         show_url = urllib.basejoin(self.settings.TUEDITOR_MEDIA_URL, show_path)
         rst = {
