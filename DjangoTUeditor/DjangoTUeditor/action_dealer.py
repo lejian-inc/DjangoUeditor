@@ -2,6 +2,7 @@
 """
 事件处理器类
 """
+from __future__ import unicode_literals
 import datetime as dt 
 import os
 import urllib 
@@ -85,6 +86,18 @@ class DefaultActionDealer(TenantSchemaMixin, ActionDealerAbstract):
                 files_array = files_array + self._get_storage_files(os.path.join(path, dir), url)
         return files_array
 
+    def _check_encode(self, path):
+        """
+        功能：检查是否需要进行encode操作
+        """
+        try:
+            from storages.backends.ftp import FTPStorage
+            if type(path) == unicode and issubclass(self.storage.__class__, FTPStorage):
+                new_path = path.encode("utf-8")
+        except:
+            new_path = path
+        return new_path
+
     def get_editor_settings(self, request):
         """
         功能：获取编辑器配置
@@ -135,7 +148,7 @@ class DefaultActionDealer(TenantSchemaMixin, ActionDealerAbstract):
             _file_name, upload_file_suffix = os.path.splitext(store_path)
             upload_file.name = _file_name
 
-            self.storage.save(store_path, upload_file)
+            self.storage.save(self._check_encode(store_path), upload_file)
             show_path = self._append_tenant_schema(store_path) # 此处考虑带有tenant机制的情况
             show_url = urllib.basejoin(self.settings.TUEDITOR_MEDIA_URL, show_path)
             rst = {
@@ -166,7 +179,7 @@ class DefaultActionDealer(TenantSchemaMixin, ActionDealerAbstract):
             return JsonResponse({"state":"文件格式不符合要求"})
 
         store_path = self._get_upload_path(upload_file.name, action)
-        self.storage.save(store_path, upload_file)
+        self.storage.save(self._check_encode(store_path), upload_file)
         show_path = self._append_tenant_schema(store_path) # 此处考虑带有tenant机制的情况
         show_url = urllib.basejoin(self.settings.TUEDITOR_MEDIA_URL, show_path)
         rst = {
