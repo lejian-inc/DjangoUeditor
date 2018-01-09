@@ -4,7 +4,7 @@
 # 使用
 进入DjangoTUeditor中，执行
 ```bash
-python setup sdist
+python setup.py sdist
 ```
 在DjangoTUeditor中dist文件夹下生成了一个tar文件，然后使用pip进行安装  
 ```bash
