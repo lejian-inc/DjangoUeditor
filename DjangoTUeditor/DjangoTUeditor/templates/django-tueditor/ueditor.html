@@ -8,7 +8,7 @@
         {% if settings.general.html_height %}
         autoHeightEnabled: false,
         {% endif %}
-        serverUrl: '/ueditor/controller/',
+        serverUrl: {{ settings.server_url | safe }},
         /*
         onready: function(){
             var img_host = ""
@@ -29,6 +29,6 @@
 {% comment %}
 TODO：
 1、这里的id需要动态生成
-2、width、height能够动态配置
-3、ueditor的所有配置均能够通过setting文件得到
+2、width、height能够动态配置 (已经解决)
+3、ueditor的所有配置均能够通过setting文件得到（已经解决）
 {% endcomment %}

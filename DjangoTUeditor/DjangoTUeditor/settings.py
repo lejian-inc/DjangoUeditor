@@ -140,6 +140,12 @@ if hasattr(gSettings, "TUEDITOR_TOOLBARS_SETTINGS"):
 if hasattr(gSettings, "TUEDITOR_GENERAL_SETTINGS"):
     UEditorGeneralSettings.update(gSettings.TUEDITOR_GENERAL_SETTINGS)
 
+# 更新ServerUrl
+if hasattr(gSettings, "TUEDITOR_SERVER_URL"):
+    UEditorServerUrl = gSettings.TUEDITOR_SERVER_URL
+else:
+    UEditorServerUrl = '/ueditor/controller/'
+
 
 # 获取存储使用的storage，依赖于Django的storage设置
 from django.core.files.storage import default_storage # 获取默认存储方式 
@@ -149,4 +155,5 @@ UEditorTotalSettings = {
     "general": UEditorGeneralSettings,
     "toolbars": UEditorToolbarsSettings,
     "upload": UEditorUploadSettings,
+    "server_url": UEditorServerUrl,
 }
